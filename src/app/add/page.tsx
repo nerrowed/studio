@@ -15,19 +15,18 @@ interface UserQuote {
   author: string;
 }
 
-// This function now saves the quote to localStorage
 async function saveQuote(quote: { quote: string; author: string }) {
   console.log("Saving quote to localStorage:", quote);
   try {
     const existingQuotes: UserQuote[] = JSON.parse(localStorage.getItem('userQuotes') || '[]');
     const newQuote: UserQuote = {
-      id: new Date().toISOString() + Math.random(), // Simple unique ID
+      id: new Date().toISOString() + Math.random(),
       quote: quote.quote,
       author: quote.author,
     };
-    const updatedQuotes = [newQuote, ...existingQuotes]; // Add to the beginning
+    const updatedQuotes = [newQuote, ...existingQuotes];
     localStorage.setItem('userQuotes', JSON.stringify(updatedQuotes));
-    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate async operation
+    await new Promise(resolve => setTimeout(resolve, 500));
     return { success: true };
   } catch (error) {
     console.error("Failed to save to localStorage", error);
@@ -70,9 +69,9 @@ export default function AddQuotePage() {
 
   return (
     <main className="container max-w-2xl py-12 md:py-24">
-        <Card className="w-full border-2 shadow-lg">
+        <Card className="w-full border-2 border-secondary bg-secondary/20 shadow-lg">
           <CardHeader>
-            <CardTitle className="font-handwriting text-4xl">
+            <CardTitle className="font-handwriting text-4xl text-primary-foreground/90">
               Tell Your Story
             </CardTitle>
             <CardDescription>
@@ -88,7 +87,7 @@ export default function AddQuotePage() {
                   value={quote}
                   onChange={(e) => setQuote(e.target.value)}
                   placeholder="The words you couldn't say..."
-                  className="min-h-[150px] text-xl font-handwriting"
+                  className="min-h-[150px] text-xl font-handwriting bg-secondary/20 border-secondary focus:ring-primary"
                   required
                 />
               </div>
@@ -99,10 +98,11 @@ export default function AddQuotePage() {
                   value={author}
                   onChange={(e) => setAuthor(e.target.value)}
                   placeholder="e.g. Reza, N, etc."
+                  className="bg-secondary/20 border-secondary focus:ring-primary"
                 />
               </div>
               {error && <p className="text-sm text-destructive">{error}</p>}
-              <Button type="submit" size="lg" className="w-full bg-slate-900 text-white hover:bg-slate-800" disabled={isLoading}>
+              <Button type="submit" size="lg" className="w-full bg-primary text-primary-foreground hover:bg-primary/90" disabled={isLoading}>
                 {isLoading ? (
                   <Loader2 className="h-6 w-6 animate-spin" />
                 ) : (
