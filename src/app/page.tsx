@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useTransition, Key } from "react";
@@ -7,139 +8,111 @@ import {
 } from "@/ai/flows/suggest-emotion-quote";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
-
-const emotions: ("neutral" | "happy" | "sad")[] = [
-  "neutral",
-  "happy",
-  "sad",
-];
+import { Plus, Loader2, RefreshCw } from "lucide-react";
+import Link from 'next/link';
 
 export default function Home() {
   const [quotes, setQuotes] = useState<SuggestEmotionQuoteOutput[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [emotionIndex, setEmotionIndex] = useState(0);
   const [isFetching, setIsFetching] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [isPending, startTransition] = useTransition();
 
+  const fetchQuotes = async () => {
+    try {
+      const quotePromises = Array(4).fill(null).map(() => 
+        suggestEmotionQuote({ emotion: "neutral" })
+      );
+      const newQuotes = await Promise.all(quotePromises);
+      setQuotes(newQuotes);
+    } catch (e) {
+      console.error("Failed to fetch quotes:", e);
+      const errorQuote = {
+        quote: "Could not fetch a quote. Please try again later.",
+        author: "System",
+      };
+      setQuotes(Array(4).fill(errorQuote));
+    }
+  }
+
   useEffect(() => {
-    const getInitialQuote = async () => {
+    const getInitialQuotes = async () => {
       setIsFetching(true);
-      try {
-        const initialQuote = await suggestEmotionQuote({ emotion: "neutral" });
-        setQuotes([initialQuote]);
-        setEmotionIndex(1);
-      } catch (e) {
-        console.error("Failed to fetch initial quote:", e);
-        setQuotes([
-          {
-            quote: "Could not fetch a quote. Please try again later.",
-            author: "System",
-          },
-        ]);
-      } finally {
-        setIsFetching(false);
-      }
+      await fetchQuotes();
+      setIsFetching(false);
     };
-    getInitialQuote();
+    getInitialQuotes();
   }, []);
 
-  const handleNext = async () => {
-    if (currentIndex < quotes.length - 1) {
-      startTransition(() => {
-        setCurrentIndex(currentIndex + 1);
-      });
-    } else {
-      setIsFetching(true);
-      try {
-        const nextEmotion = emotions[emotionIndex % emotions.length];
-        const newQuote = await suggestEmotionQuote({ emotion: nextEmotion });
-        setQuotes((prev) => [...prev, newQuote]);
-        setEmotionIndex((prev) => prev + 1);
-        startTransition(() => {
-          setCurrentIndex(quotes.length);
-        });
-      } catch (error) {
-        console.error("Failed to fetch next quote:", error);
-      } finally {
-        setIsFetching(false);
-      }
-    }
-  };
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchQuotes();
+    setIsRefreshing(false);
+  }
 
-  const handlePrevious = () => {
-    if (currentIndex > 0) {
-      startTransition(() => {
-        setCurrentIndex(currentIndex - 1);
-      });
-    }
-  };
-
-  const currentQuote = quotes[currentIndex];
-  const isLoading = isFetching || isPending;
+  const isLoading = isFetching || isPending || isRefreshing;
 
   return (
-    <main className="flex min-h-screen w-full flex-col items-center justify-center bg-background p-4 sm:p-8 font-body text-foreground">
-      <div className="text-center mb-12">
-        <h1
-          className="text-5xl md:text-7xl font-bold font-headline"
-          style={{ color: "hsl(var(--primary))" }}
-        >
-          Unspoken
-        </h1>
-        <p className="text-lg md:text-xl text-muted-foreground mt-2 font-light">
-          something i couldn't say
-        </p>
+    <main className="flex min-h-screen w-full flex-col items-center bg-background p-4 sm:p-8 font-body text-foreground">
+       <div className="w-full max-w-4xl flex justify-between items-center mb-12">
+        <div className="text-left">
+            <h1
+            className="text-5xl md:text-7xl font-bold font-headline"
+            style={{ color: "hsl(var(--primary))" }}
+            >
+            Unspoken
+            </h1>
+            <p className="text-lg md:text-xl text-muted-foreground mt-2 font-light">
+            something i couldn't say
+            </p>
+        </div>
+        <div className="flex gap-4">
+            <Button
+                onClick={handleRefresh}
+                disabled={isLoading}
+                variant="outline"
+                size="icon"
+                className="h-14 w-14 rounded-full bg-card hover:bg-accent/10 border-accent/50 text-accent disabled:opacity-50"
+                aria-label="Refresh quotes"
+            >
+                {isRefreshing ? <Loader2 className="h-7 w-7 animate-spin" /> : <RefreshCw className="h-7 w-7" />}
+            </Button>
+            <Button variant="default" size="icon" className="h-14 w-14 rounded-full bg-accent text-accent-foreground shadow-lg hover:bg-accent/90" asChild>
+                <Link href="/add">
+                    <Plus className="h-7 w-7"/>
+                </Link>
+            </Button>
+        </div>
       </div>
 
-      <div className="relative w-full max-w-2xl min-h-[250px] flex items-center justify-center">
-        {isFetching && quotes.length === 0 ? (
-          <Card className="w-full min-h-[250px] flex items-center justify-center bg-card/50 shadow-none border-none">
-            <Loader2 className="h-10 w-10 animate-spin text-muted-foreground" />
-          </Card>
-        ) : currentQuote ? (
-          <div key={currentIndex as Key} className="w-full animate-fade-in">
-            <Card className="w-full shadow-lg rounded-xl border-primary/10">
-              <CardContent className="p-8 text-center min-h-[250px] flex flex-col justify-center items-center">
-                <blockquote className="space-y-6">
-                  <p className="text-2xl md:text-3xl font-medium text-card-foreground leading-relaxed">
-                    “{currentQuote.quote}”
-                  </p>
-                  <cite className="text-md text-muted-foreground not-italic">
-                    — {currentQuote.author || "Unknown"}
-                  </cite>
-                </blockquote>
-              </CardContent>
-            </Card>
+      <div className="w-full max-w-4xl flex items-center justify-center">
+        {isFetching ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
+                {Array(4).fill(null).map((_, i) => (
+                    <Card key={i} className="w-full min-h-[250px] flex items-center justify-center bg-card/50 shadow-none border-none">
+                        <Loader2 className="h-10 w-10 animate-spin text-muted-foreground" />
+                    </Card>
+                ))}
+            </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
+            {quotes.map((q, index) => (
+                <div key={index as Key} className="w-full animate-fade-in">
+                    <Card className="w-full shadow-lg rounded-xl border-primary/10 min-h-[250px] flex flex-col">
+                    <CardContent className="p-8 text-center flex-grow flex flex-col justify-center items-center">
+                        <blockquote className="space-y-6">
+                        <p className="text-2xl font-medium text-card-foreground leading-relaxed">
+                            “{q.quote}”
+                        </p>
+                        <cite className="text-md text-muted-foreground not-italic">
+                            — {q.author || "Unknown"}
+                        </cite>
+                        </blockquote>
+                    </CardContent>
+                    </Card>
+                </div>
+            ))}
           </div>
-        ) : null}
-      </div>
-
-      <div className="flex items-center gap-6 mt-12">
-        <Button
-          onClick={handlePrevious}
-          disabled={currentIndex === 0 || isLoading}
-          variant="outline"
-          size="icon"
-          className="h-14 w-14 rounded-full bg-card hover:bg-accent/10 border-accent/50 text-accent disabled:opacity-50"
-          aria-label="Previous quote"
-        >
-          <ChevronLeft className="h-7 w-7" />
-        </Button>
-        <Button
-          onClick={handleNext}
-          disabled={isLoading && currentIndex === quotes.length}
-          variant="default"
-          size="icon"
-          className="h-16 w-16 rounded-full bg-accent text-accent-foreground shadow-lg hover:bg-accent/90 transition-transform hover:scale-105 disabled:opacity-50"
-          aria-label="Next quote"
-        >
-          {isFetching && currentIndex === quotes.length - 1 ? (
-            <Loader2 className="h-7 w-7 animate-spin" />
-          ) : (
-            <ChevronRight className="h-7 w-7" />
-          )}
-        </Button>
+        )}
       </div>
     </main>
   );
