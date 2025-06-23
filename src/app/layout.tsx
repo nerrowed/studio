@@ -20,8 +20,8 @@ const fontHandwriting = Kalam({
 
 
 export const metadata: Metadata = {
-  title: 'sendthesong',
-  description: 'Express your untold message through the song.',
+  title: 'something i couldnt say',
+  description: 'i cant say it to you, so i create this website',
 };
 
 export default function RootLayout({

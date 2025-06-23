@@ -17,9 +17,9 @@ interface UserQuote {
 const QUOTES_PER_PAGE = 4;
 
 const InfoCard = ({ icon, title, children }: { icon: React.ReactNode, title: string, children: React.ReactNode }) => (
-    <Card className="border-2 border-secondary bg-secondary/20 shadow-lg hover:bg-secondary/30 transition-colors">
+    <Card className="border-2 border-border bg-card shadow-lg hover:bg-secondary transition-colors">
         <CardHeader>
-            <CardTitle className="flex items-center gap-3 font-handwriting text-2xl text-primary-foreground/90">
+            <CardTitle className="flex items-center gap-3 font-handwriting text-2xl text-foreground">
                 {icon} {title}
             </CardTitle>
         </CardHeader>
@@ -101,12 +101,10 @@ export default function Home() {
       <section className="w-full py-12 md:py-24 lg:py-32">
         <div className="container px-4 md:px-6 text-center">
           <h1 className="font-handwriting text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl/none">
-            a bunch of the untold words,
-            <br />
-            sent through the song
+            i cant say it to you, so i create this website
           </h1>
           <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl mt-4">
-            Express your untold message through the song.
+            A collection of unspoken words and feelings.
           </p>
           <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90" asChild>
@@ -150,14 +148,14 @@ export default function Home() {
                 placeholder="Search messages by content or recipient..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 h-12 text-base rounded-lg border-2 border-secondary bg-secondary/20 focus:ring-primary focus:border-primary"
+                className="w-full pl-12 h-12 text-base rounded-lg border-2 border-border bg-background focus:ring-primary focus:border-primary"
               />
             </div>
             
           {loadingOrPending ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                {Array(QUOTES_PER_PAGE).fill(null).map((_, i) => (
-                    <Card key={i} className="min-h-[220px] flex items-center justify-center bg-secondary/20">
+                    <Card key={i} className="min-h-[220px] flex items-center justify-center bg-secondary">
                         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
                     </Card>
                 ))}
@@ -166,14 +164,14 @@ export default function Home() {
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {currentQuotes.map((q) => (
-                  <Card key={q.id} className="shadow-md hover:shadow-xl transition-shadow border-2 border-secondary bg-secondary/20 flex flex-col p-6">
+                  <Card key={q.id} className="shadow-md hover:shadow-xl transition-shadow border-2 border-border bg-card flex flex-col p-6">
                     <div className="flex-grow">
                         <p className="text-sm text-muted-foreground mb-2">To: {q.author}</p>
-                        <p className="font-handwriting text-2xl/tight text-primary-foreground/90">
+                        <p className="font-handwriting text-2xl/tight text-foreground">
                             {q.quote}
                         </p>
                     </div>
-                    <div className="flex items-center gap-3 mt-4 pt-4 border-t border-secondary">
+                    <div className="flex items-center gap-3 mt-4 pt-4 border-t border-border">
                         <div className="h-10 w-10 bg-muted rounded-sm flex items-center justify-center shrink-0">
                             <Music className="h-5 w-5 text-muted-foreground" />
                         </div>

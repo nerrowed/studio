@@ -69,9 +69,9 @@ export default function AddQuotePage() {
 
   return (
     <main className="container max-w-2xl py-12 md:py-24">
-        <Card className="w-full border-2 border-secondary bg-secondary/20 shadow-lg">
+        <Card className="w-full border-2 border-border bg-card shadow-lg">
           <CardHeader>
-            <CardTitle className="font-handwriting text-4xl text-primary-foreground/90">
+            <CardTitle className="font-handwriting text-4xl text-foreground">
               Tell Your Story
             </CardTitle>
             <CardDescription>
@@ -87,7 +87,7 @@ export default function AddQuotePage() {
                   value={quote}
                   onChange={(e) => setQuote(e.target.value)}
                   placeholder="The words you couldn't say..."
-                  className="min-h-[150px] text-xl font-handwriting bg-secondary/20 border-secondary focus:ring-primary"
+                  className="min-h-[150px] text-xl font-handwriting bg-background border-border focus:ring-primary"
                   required
                 />
               </div>
@@ -98,7 +98,7 @@ export default function AddQuotePage() {
                   value={author}
                   onChange={(e) => setAuthor(e.target.value)}
                   placeholder="e.g. Reza, N, etc."
-                  className="bg-secondary/20 border-secondary focus:ring-primary"
+                  className="bg-background border-border focus:ring-primary"
                 />
               </div>
               {error && <p className="text-sm text-destructive">{error}</p>}
