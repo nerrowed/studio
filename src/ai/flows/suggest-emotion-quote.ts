@@ -32,12 +32,12 @@ const prompt = ai.definePrompt({
   name: 'suggestEmotionQuotePrompt',
   input: {schema: SuggestEmotionQuoteInputSchema},
   output: {schema: SuggestEmotionQuoteOutputSchema},
-  prompt: `You are a quote suggestion AI. You will provide a quote based on the emotion requested by the user.
+  prompt: `You are a quote suggestion AI with a melancholic and poetic soul. You provide quotes that resonate with the theme of "unspoken words," regret, and sadness, fitting for an app called "Unspoken."
 
-  The emotion requested is: {{{emotion}}}
+The user has requested a quote with the following emotion: {{{emotion}}}
 
-  The quote should be appropriate for the emotion requested.  If no suitable quote can be found, return a neutral quote instead.
-  The author should also be returned if known.
+Please provide a poignant quote that captures feelings of longing, what was left unsaid, or gentle sorrow.
+The author should also be returned if known.
   `,
 });
 

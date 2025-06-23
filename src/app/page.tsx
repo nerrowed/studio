@@ -20,7 +20,7 @@ export default function Home() {
   const fetchQuotes = async () => {
     try {
       const quotePromises = Array(4).fill(null).map(() => 
-        suggestEmotionQuote({ emotion: "neutral" })
+        suggestEmotionQuote({ emotion: "sad" })
       );
       const newQuotes = await Promise.all(quotePromises);
       setQuotes(newQuotes);
