@@ -1,11 +1,11 @@
 
 "use client";
 
-import { useState, useEffect, useTransition, Key } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Plus, Loader2, Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { PenLine, Search, ChevronLeft, ChevronRight, BookOpen, MessagesSquare, Music, Loader2 } from "lucide-react";
 import Link from 'next/link';
 
 interface UserQuote {
@@ -14,7 +14,22 @@ interface UserQuote {
   author: string;
 }
 
-const QUOTES_PER_PAGE = 4;
+const QUOTES_PER_PAGE = 6;
+
+const InfoCard = ({ icon, title, children }: { icon: React.ReactNode, title: string, children: React.ReactNode }) => (
+    <Card className="border-2">
+        <CardHeader>
+            <CardTitle className="flex items-center gap-2 font-handwriting text-2xl">
+                {icon} {title}
+            </CardTitle>
+        </CardHeader>
+        <CardContent>
+            <p className="text-secondary-foreground">
+                {children}
+            </p>
+        </CardContent>
+    </Card>
+);
 
 export default function Home() {
   const [allQuotes, setAllQuotes] = useState<UserQuote[]>([]);
@@ -25,11 +40,23 @@ export default function Home() {
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
-    // This effect runs on the client after hydration
     try {
       const storedQuotes = localStorage.getItem('userQuotes');
-      if (storedQuotes) {
-        setAllQuotes(JSON.parse(storedQuotes));
+      const initialQuotes: UserQuote[] = storedQuotes ? JSON.parse(storedQuotes) : [];
+
+      if (initialQuotes.length === 0) {
+        const dummyQuotes = [
+            { id: '1', quote: 'masih ada notes kita di gallery, full of plans yang ga pernah kejadian', author: 'Reza' },
+            { id: '2', quote: 'thank you for being my safe place through 2023... even if we drifted', author: 'Nayla' },
+            { id: '3', quote: 'Kadang i wish i could much ur random text day better', author: 'Jensen' },
+            { id: '4', quote: 'and the thing about goodbyes is that they can happen in a single moment, yet feel like they last a lifetime.', author: 'Novan' },
+            { id: '5', quote: 'I wonder if you miss listening to my random stories as much as I miss telling them to you.', author: 'Emil' },
+            { id: '6', quote: 'We were a story that was never meant to be finished.', author: 'Vanya' },
+        ];
+        localStorage.setItem('userQuotes', JSON.stringify(dummyQuotes));
+        setAllQuotes(dummyQuotes);
+      } else {
+        setAllQuotes(initialQuotes);
       }
     } catch (error) {
       console.error("Failed to parse quotes from localStorage", error);
@@ -47,7 +74,7 @@ export default function Home() {
         q.author.toLowerCase().includes(lowercasedFilter)
       );
       setFilteredQuotes(filtered);
-      setCurrentPage(0); // Reset to first page on new search
+      setCurrentPage(0);
     });
   }, [searchTerm, allQuotes]);
 
@@ -66,96 +93,125 @@ export default function Home() {
       setCurrentPage(currentPage - 1);
     }
   };
-
+  
   const loadingOrPending = isLoading || isPending;
 
   return (
-    <main className="flex min-h-screen w-full flex-col items-center bg-background p-4 sm:p-8 font-body text-foreground">
-       <div className="w-full max-w-4xl flex justify-between items-center mb-8">
-        <div className="text-left">
-            <h1
-            className="text-5xl md:text-7xl font-bold font-headline"
-            style={{ color: "hsl(var(--primary))" }}
-            >
-            Unspoken
-            </h1>
-            <p className="text-lg md:text-xl text-muted-foreground mt-2 font-light">
-            something i couldn't say
-            </p>
+    <div className="flex flex-col">
+      <section className="w-full py-12 md:py-24 lg:py-32">
+        <div className="container px-4 md:px-6 text-center">
+          <h1 className="font-handwriting text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl/none">
+            a bunch of the untold words,
+            <br />
+            sent through the song
+          </h1>
+          <p className="mx-auto max-w-[700px] text-secondary-foreground md:text-xl mt-4">
+            Express your untold message through the song.
+          </p>
+          <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center">
+            <Button size="lg" className="bg-slate-900 text-white hover:bg-slate-800" asChild>
+              <Link href="/add">
+                Tell Your Story
+                <PenLine className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+            <Button variant="outline" size="lg" className="w-full sm:w-auto" asChild>
+                <a href="#browse">
+                    Browse the Stories
+                    <Search className="ml-2 h-4 w-4" />
+                </a>
+            </Button>
+          </div>
         </div>
-        <Button variant="default" size="icon" className="h-14 w-14 rounded-full bg-accent text-accent-foreground shadow-lg hover:bg-accent/90" asChild>
-            <Link href="/add">
-                <Plus className="h-7 w-7"/>
-            </Link>
-        </Button>
-      </div>
-
-      <div className="w-full max-w-4xl mb-8">
-        <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-          <Input
-            type="search"
-            placeholder="Search quotes or authors..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-12 h-12 text-lg rounded-full"
-          />
+      </section>
+      
+      <section className="w-full pb-12 md:pb-24 bg-secondary/50">
+        <div className="container px-4 md:px-6 py-12">
+          <div className="grid gap-6 md:grid-cols-3">
+            <InfoCard icon={<MessagesSquare className="h-6 w-6"/>} title="Share Your Message">
+                Choose a song and write a heartfelt message to someone special or save it as a little gift for yourself.
+            </InfoCard>
+            <InfoCard icon={<BookOpen className="h-6 w-6"/>} title="Browse Messages">
+                Find messages that were written for you. Search your name and uncover heartfelt messages written just for you.
+            </InfoCard>
+            <InfoCard icon={<Music className="h-6 w-6"/>} title="Detail Messages">
+                Tap on any message card to discover the full story behind it and listen to the song that captures the emotion of the moment!
+            </InfoCard>
+          </div>
         </div>
-      </div>
+      </section>
 
-      <div className="w-full max-w-4xl flex-grow">
-        {loadingOrPending ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
-                {Array(4).fill(null).map((_, i) => (
-                    <Card key={i} className="w-full min-h-[250px] flex items-center justify-center bg-card/50 shadow-none border-none">
-                        <Loader2 className="h-10 w-10 animate-spin text-muted-foreground" />
+      <section id="browse" className="w-full pb-12 md:pb-24 pt-12">
+        <div className="container px-4 md:px-6">
+            <div className="relative mb-8 max-w-lg mx-auto">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="Search messages by content or recipient..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-12 h-12 text-base rounded-lg border-2"
+              />
+            </div>
+            
+          {loadingOrPending ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+               {Array(QUOTES_PER_PAGE).fill(null).map((_, i) => (
+                    <Card key={i} className="min-h-[220px] flex items-center justify-center bg-secondary/50">
+                        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
                     </Card>
                 ))}
             </div>
-        ) : currentQuotes.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
-            {currentQuotes.map((q) => (
-                <div key={q.id} className="w-full animate-fade-in">
-                    <Card className="w-full shadow-lg rounded-xl border-primary/10 min-h-[250px] flex flex-col">
-                    <CardContent className="p-8 text-center flex-grow flex flex-col justify-center items-center">
-                        <blockquote className="space-y-6">
-                        <p className="text-2xl font-medium text-card-foreground leading-relaxed">
-                            “{q.quote}”
-                        </p>
-                        <cite className="text-md text-muted-foreground not-italic">
-                            — {q.author || "Unknown"}
-                        </cite>
-                        </blockquote>
+          ) : currentQuotes.length > 0 ? (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {currentQuotes.map((q) => (
+                  <Card key={q.id} className="shadow-md hover:shadow-xl transition-shadow border-2 flex flex-col">
+                    <CardContent className="p-6 flex-grow flex flex-col justify-between">
+                        <div>
+                            <p className="text-sm text-secondary-foreground mb-2">To: {q.author}</p>
+                            <p className="font-handwriting text-2xl/tight text-foreground">
+                                {q.quote}
+                            </p>
+                        </div>
+                        <div className="flex items-center gap-3 mt-4 pt-4 border-t">
+                            <div className="h-10 w-10 bg-muted rounded-sm flex items-center justify-center shrink-0">
+                                <Music className="h-5 w-5 text-muted-foreground" />
+                            </div>
+                            <div className="flex-grow min-w-0">
+                                <p className="font-semibold text-sm truncate">when was it over?</p>
+                                <p className="text-xs text-secondary-foreground truncate">Sasha Alex Sloan, Sam Hunt</p>
+                            </div>
+                            <svg role="img" height="20" width="20" className="shrink-0" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor"><path d="M7.718 1.933a.75.75 0 0 1 .564 0l6 3.333a.75.75 0 0 1 0 1.334l-6 3.333a.75.75 0 0 1-1.128-.667V2.6a.75.75 0 0 1 .564-.667z"></path><path d="M1.5 2.75a.75.75 0 0 0 0 1.5h2.5a.75.75 0 0 0 0-1.5H1.5zm0 3a.75.75 0 0 0 0 1.5h2.5a.75.75 0 0 0 0-1.5H1.5zm0 3a.75.75 0 0 0 0 1.5H1a.75.75 0 0 0 0-1.5h.5zM1 12.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5H1.75a.75.75 0 0 1-.75-.75z"></path></svg>
+                        </div>
                     </CardContent>
-                    </Card>
+                  </Card>
+                ))}
+              </div>
+              {pageCount > 1 && (
+                <div className="flex items-center justify-center gap-4 mt-12">
+                    <Button onClick={handlePrevPage} disabled={currentPage === 0} variant="outline" size="icon">
+                        <ChevronLeft className="h-4 w-4" />
+                    </Button>
+                    <span className="text-sm font-semibold text-muted-foreground">
+                        Page {currentPage + 1} of {pageCount}
+                    </span>
+                    <Button onClick={handleNextPage} disabled={currentPage >= pageCount - 1} variant="outline" size="icon">
+                        <ChevronRight className="h-4 w-4" />
+                    </Button>
                 </div>
-            ))}
-          </div>
-        ) : (
-            <div className="text-center text-muted-foreground mt-16 w-full">
-                <p className="text-xl">No quotes found.</p>
-                {allQuotes.length === 0 ? (
-                    <p>Why not <Link href="/add" className="text-primary underline">add one</Link>?</p>
-                ) : (
-                    <p>Try a different search term.</p>
-                )}
+              )}
+            </>
+          ) : (
+            <div className="text-center py-16">
+              <p className="text-lg text-secondary-foreground">No messages found for your search.</p>
+               <Button asChild className="mt-4" variant="link">
+                <Link href="/add">Want to add one?</Link>
+              </Button>
             </div>
-        )}
-      </div>
-
-      {pageCount > 1 && (
-        <div className="flex items-center justify-center gap-4 mt-8">
-            <Button onClick={handlePrevPage} disabled={currentPage === 0 || loadingOrPending} variant="outline" size="lg">
-                <ChevronLeft className="mr-2 h-5 w-5" /> Previous
-            </Button>
-            <span className="text-muted-foreground font-medium">
-                Page {currentPage + 1} of {pageCount}
-            </span>
-            <Button onClick={handleNextPage} disabled={currentPage >= pageCount - 1 || loadingOrPending} variant="outline" size="lg">
-                Next <ChevronRight className="ml-2 h-5 w-5" />
-            </Button>
+          )}
         </div>
-      )}
-    </main>
+      </section>
+    </div>
   );
 }

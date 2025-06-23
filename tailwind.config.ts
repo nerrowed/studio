@@ -10,9 +10,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['Literata', 'serif'],
-        headline: ['Literata', 'serif'],
-        code: ['monospace'],
+        sans: ['var(--font-sans)', 'sans-serif'],
+        handwriting: ['var(--font-handwriting)', 'cursive'],
       },
       colors: {
         background: 'hsl(var(--background))',

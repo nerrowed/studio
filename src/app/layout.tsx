@@ -1,10 +1,27 @@
 import type {Metadata} from 'next';
 import {Toaster} from '@/components/ui/toaster';
 import './globals.css';
+import { Inter, Kalam } from 'next/font/google';
+import { cn } from '@/lib/utils';
+import { Header } from '@/components/header';
+
+const fontSans = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-sans',
+});
+
+const fontHandwriting = Kalam({
+  subsets: ['latin'],
+  weight: ['300', '400', '700'],
+  display: 'swap',
+  variable: '--font-handwriting',
+});
+
 
 export const metadata: Metadata = {
-  title: 'Unspoken',
-  description: 'A place for words that were left unsaid.',
+  title: 'sendthesong',
+  description: 'Express your untold message through the song.',
 };
 
 export default function RootLayout({
@@ -13,21 +30,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,700;1,7..72,400&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body className="font-body antialiased">
-        {children}
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={cn(
+          "min-h-screen bg-background font-sans antialiased",
+          fontSans.variable,
+          fontHandwriting.variable
+        )}
+      >
+        <div className="relative flex min-h-dvh flex-col bg-background">
+          <Header />
+          <main className="flex-1">{children}</main>
+        </div>
         <Toaster />
       </body>
     </html>

@@ -6,9 +6,8 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, ArrowLeft } from 'lucide-react';
-import Link from 'next/link';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Loader2 } from 'lucide-react';
 
 interface UserQuote {
   id: string;
@@ -48,19 +47,19 @@ export default function AddQuotePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!quote.trim()) {
-      setError('Quote cannot be empty.');
+      setError('Message cannot be empty.');
       return;
     }
     setError(null);
     setIsSaving(true);
 
     try {
-      await saveQuote({ quote, author: author || 'Unknown' });
+      await saveQuote({ quote, author: author || 'Anonymous' });
       startTransition(() => {
         router.push('/');
       });
     } catch (err) {
-      setError('Failed to save quote. Please try again.');
+      setError('Failed to save message. Please try again.');
       console.error(err);
     } finally {
       setIsSaving(false);
@@ -70,56 +69,49 @@ export default function AddQuotePage() {
   const isLoading = isSaving || isPending;
 
   return (
-    <main className="flex min-h-screen w-full flex-col items-center justify-center bg-background p-4 sm:p-8 font-body text-foreground">
-        <div className="absolute top-4 left-4">
-            <Button variant="ghost" size="icon" asChild>
-                <Link href="/">
-                    <ArrowLeft />
-                </Link>
-            </Button>
-        </div>
-      <div className="w-full max-w-xl">
-        <Card className="shadow-lg rounded-xl border-primary/10">
+    <main className="container max-w-2xl py-12 md:py-24">
+        <Card className="w-full border-2 shadow-lg">
           <CardHeader>
-            <CardTitle className="text-center text-3xl font-bold font-headline" style={{ color: "hsl(var(--primary))" }}>
-              Add a New Quote
+            <CardTitle className="font-handwriting text-4xl">
+              Tell Your Story
             </CardTitle>
+            <CardDescription>
+                Write your untold message. It can be for someone, or just for yourself.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <label htmlFor="quote" className="text-sm font-medium text-muted-foreground">Quote</label>
+                <label htmlFor="quote" className="font-semibold text-muted-foreground">Your Message</label>
                 <Textarea
                   id="quote"
                   value={quote}
                   onChange={(e) => setQuote(e.target.value)}
                   placeholder="The words you couldn't say..."
-                  className="min-h-[120px] text-lg"
+                  className="min-h-[150px] text-xl font-handwriting"
                   required
                 />
               </div>
               <div className="space-y-2">
-                <label htmlFor="author" className="text-sm font-medium text-muted-foreground">Author (Optional)</label>
+                <label htmlFor="author" className="font-semibold text-muted-foreground">To (Name or initial)</label>
                 <Input
                   id="author"
                   value={author}
                   onChange={(e) => setAuthor(e.target.value)}
-                  placeholder="Who said it?"
-                  className="text-lg"
+                  placeholder="e.g. Reza, N, etc."
                 />
               </div>
               {error && <p className="text-sm text-destructive">{error}</p>}
-              <Button type="submit" className="w-full h-12 text-lg" disabled={isLoading}>
+              <Button type="submit" size="lg" className="w-full bg-slate-900 text-white hover:bg-slate-800" disabled={isLoading}>
                 {isLoading ? (
                   <Loader2 className="h-6 w-6 animate-spin" />
                 ) : (
-                  'Save Quote'
+                  'Submit Message'
                 )}
               </Button>
             </form>
           </CardContent>
         </Card>
-      </div>
-    </main>
+      </main>
   );
 }
