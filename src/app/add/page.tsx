@@ -10,12 +10,30 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
-// This is a mock function, replace with your actual data saving logic
+interface UserQuote {
+  id: string;
+  quote: string;
+  author: string;
+}
+
+// This function now saves the quote to localStorage
 async function saveQuote(quote: { quote: string; author: string }) {
-  console.log("Saving quote:", quote);
-  // Here you would typically make an API call to your backend to save the quote
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  return { success: true };
+  console.log("Saving quote to localStorage:", quote);
+  try {
+    const existingQuotes: UserQuote[] = JSON.parse(localStorage.getItem('userQuotes') || '[]');
+    const newQuote: UserQuote = {
+      id: new Date().toISOString() + Math.random(), // Simple unique ID
+      quote: quote.quote,
+      author: quote.author,
+    };
+    const updatedQuotes = [newQuote, ...existingQuotes]; // Add to the beginning
+    localStorage.setItem('userQuotes', JSON.stringify(updatedQuotes));
+    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate async operation
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to save to localStorage", error);
+    return { success: false };
+  }
 }
 
 
