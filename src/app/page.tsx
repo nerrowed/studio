@@ -5,7 +5,7 @@ import { useState, useEffect, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { PenLine, Search, ChevronLeft, ChevronRight, BookOpen, MessagesSquare, Music, Loader2 } from "lucide-react";
+import { PenLine, Search, ChevronLeft, ChevronRight, BookOpen, MessagesSquare, Quote, Loader2 } from "lucide-react";
 import Link from 'next/link';
 
 interface UserQuote {
@@ -127,13 +127,13 @@ export default function Home() {
         <div className="container px-4 md:px-6 py-12">
           <div className="grid gap-6 md:grid-cols-3">
             <InfoCard icon={<MessagesSquare className="h-6 w-6 text-primary"/>} title="Share Your Message">
-                Choose a song and write a heartfelt message to someone special or save it as a little gift for yourself.
+                Write a heartfelt message to someone special or save it as a little gift for yourself.
             </InfoCard>
             <InfoCard icon={<BookOpen className="h-6 w-6 text-primary"/>} title="Browse Messages">
                 Find messages that were written for you. Search your name and uncover heartfelt messages written just for you.
             </InfoCard>
-            <InfoCard icon={<Music className="h-6 w-6 text-primary"/>} title="Detail Messages">
-                Tap on any message card to discover the full story behind it and listen to the song that captures the emotion of the moment!
+            <InfoCard icon={<Quote className="h-6 w-6 text-primary"/>} title="Read the Stories">
+                Every message holds a story. Explore the collection of unspoken words shared by others.
             </InfoCard>
           </div>
         </div>
@@ -170,16 +170,6 @@ export default function Home() {
                         <p className="font-handwriting text-2xl/tight text-foreground">
                             {q.quote}
                         </p>
-                    </div>
-                    <div className="flex items-center gap-3 mt-4 pt-4 border-t border-border">
-                        <div className="h-10 w-10 bg-muted rounded-sm flex items-center justify-center shrink-0">
-                            <Music className="h-5 w-5 text-muted-foreground" />
-                        </div>
-                        <div className="flex-grow min-w-0">
-                            <p className="font-semibold text-sm truncate">when was it over?</p>
-                            <p className="text-xs text-secondary-foreground truncate">Sasha Alex Sloan, Sam Hunt</p>
-                        </div>
-                        <svg role="img" height="20" width="20" className="shrink-0" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor"><path d="M7.718 1.933a.75.75 0 0 1 .564 0l6 3.333a.75.75 0 0 1 0 1.334l-6 3.333a.75.75 0 0 1-1.128-.667V2.6a.75.75 0 0 1 .564-.667z"></path><path d="M1.5 2.75a.75.75 0 0 0 0 1.5h2.5a.75.75 0 0 0 0-1.5H1.5zm0 3a.75.75 0 0 0 0 1.5h2.5a.75.75 0 0 0 0-1.5H1.5zm0 3a.75.75 0 0 0 0 1.5H1a.75.75 0 0 0 0-1.5h.5zM1 12.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5H1.75a.75.75 0 0 1-.75-.75z"></path></svg>
                     </div>
                   </Card>
                 ))}
