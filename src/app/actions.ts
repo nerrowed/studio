@@ -1,6 +1,6 @@
 'use server';
 
-import { db } from '@/lib/firebase';
+import { getFirestoreInstance } from '@/lib/firebase';
 import { collection, addDoc, getDocs, query, orderBy, serverTimestamp, Timestamp } from 'firebase/firestore';
 import { revalidatePath } from 'next/cache';
 
@@ -13,6 +13,7 @@ export interface UserQuote {
 
 export async function addQuoteAction(data: { quote: string; author: string }) {
   try {
+    const db = getFirestoreInstance();
     await addDoc(collection(db, 'quotes'), {
       ...data,
       createdAt: serverTimestamp(),
@@ -28,6 +29,7 @@ export async function addQuoteAction(data: { quote: string; author: string }) {
 
 export async function getQuotesAction(): Promise<UserQuote[]> {
     try {
+        const db = getFirestoreInstance();
         const quotesCollection = collection(db, 'quotes');
         const q = query(quotesCollection, orderBy('createdAt', 'desc'));
         const querySnapshot = await getDocs(q);
