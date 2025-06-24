@@ -8,32 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
-
-interface UserQuote {
-  id: string;
-  quote: string;
-  author: string;
-}
-
-async function saveQuote(quote: { quote: string; author: string }) {
-  console.log("Saving quote to localStorage:", quote);
-  try {
-    const existingQuotes: UserQuote[] = JSON.parse(localStorage.getItem('userQuotes') || '[]');
-    const newQuote: UserQuote = {
-      id: new Date().toISOString() + Math.random(),
-      quote: quote.quote,
-      author: quote.author,
-    };
-    const updatedQuotes = [newQuote, ...existingQuotes];
-    localStorage.setItem('userQuotes', JSON.stringify(updatedQuotes));
-    await new Promise(resolve => setTimeout(resolve, 500));
-    return { success: true };
-  } catch (error) {
-    console.error("Failed to save to localStorage", error);
-    return { success: false };
-  }
-}
-
+import { addQuoteAction } from '../actions';
 
 export default function AddQuotePage() {
   const [quote, setQuote] = useState('');
@@ -53,12 +28,16 @@ export default function AddQuotePage() {
     setIsSaving(true);
 
     try {
-      await saveQuote({ quote, author: author || 'Anonymous' });
-      startTransition(() => {
-        router.push('/');
-      });
+      const result = await addQuoteAction({ quote, author: author || 'Anonymous' });
+      if (result.success) {
+        startTransition(() => {
+          router.push('/');
+        });
+      } else {
+        setError(result.error || 'Failed to save message. Please try again.');
+      }
     } catch (err) {
-      setError('Failed to save message. Please try again.');
+      setError('An unexpected error occurred. Please try again.');
       console.error(err);
     } finally {
       setIsSaving(false);

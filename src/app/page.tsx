@@ -7,12 +7,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { PenLine, Search, ChevronLeft, ChevronRight, BookOpen, MessagesSquare, Quote, Loader2 } from "lucide-react";
 import Link from 'next/link';
+import type { UserQuote } from "./actions";
+import { getQuotesAction } from "./actions";
 
-interface UserQuote {
-  id: string;
-  quote: string;
-  author: string;
-}
 
 const QUOTES_PER_PAGE = 4;
 
@@ -40,30 +37,20 @@ export default function Home() {
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
-    try {
-      const storedQuotes = localStorage.getItem('userQuotes');
-      const initialQuotes: UserQuote[] = storedQuotes ? JSON.parse(storedQuotes) : [];
-
-      if (initialQuotes.length === 0) {
-        const dummyQuotes = [
-            { id: '1', quote: 'masih ada notes kita di gallery, full of plans yang ga pernah kejadian', author: 'Reza' },
-            { id: '2', quote: 'thank you for being my safe place through 2023... even if we drifted', author: 'Nayla' },
-            { id: '3', quote: 'Kadang i wish i could get your random text to make my day better', author: 'Jensen' },
-            { id: '4', quote: 'and the thing about goodbyes is that they can happen in a single moment, yet feel like they last a lifetime.', author: 'Novan' },
-            { id: '5', quote: 'I wonder if you miss listening to my random stories as much as I miss telling them to you.', author: 'Emil' },
-            { id: '6', quote: 'We were a story that was never meant to be finished.', author: 'Vanya' },
-        ];
-        localStorage.setItem('userQuotes', JSON.stringify(dummyQuotes));
-        setAllQuotes(dummyQuotes);
-      } else {
-        setAllQuotes(initialQuotes);
+    const fetchQuotes = async () => {
+      setIsLoading(true);
+      try {
+        const quotesFromDb = await getQuotesAction();
+        setAllQuotes(quotesFromDb);
+      } catch (error) {
+        console.error("Failed to fetch quotes from database", error);
+        setAllQuotes([]);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.error("Failed to parse quotes from localStorage", error);
-      setAllQuotes([]);
-    } finally {
-      setIsLoading(false);
-    }
+    };
+
+    fetchQuotes();
   }, []);
 
   useEffect(() => {
@@ -190,7 +177,7 @@ export default function Home() {
             </>
           ) : (
             <div className="text-center py-16">
-              <p className="text-lg text-muted-foreground">No messages found for your search.</p>
+              <p className="text-lg text-muted-foreground">No messages found. Be the first to add one!</p>
                <Button asChild className="mt-4" variant="link">
                 <Link href="/add">Want to add one?</Link>
               </Button>
