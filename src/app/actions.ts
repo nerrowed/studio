@@ -20,8 +20,9 @@ export async function addQuoteAction(data: { quote: string; author: string }) {
     revalidatePath('/');
     return { success: true };
   } catch (error) {
-    console.error('Error adding document: ', error);
-    return { success: false, error: 'Failed to save message to database.' };
+    console.error('Error adding document to Firestore: ', error);
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
+    return { success: false, error: `Failed to save quote. Reason: ${errorMessage}` };
   }
 }
 
