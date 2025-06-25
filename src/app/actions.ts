@@ -12,6 +12,9 @@ export interface UserQuote {
   createdAt: string;
 }
 
+// Ganti dengan Secret Key Cloudflare Turnstile Anda
+const TURNSTILE_SECRET_KEY = "1x0000000000000000000000000000000AA"; 
+
 export async function addQuoteAction(data: { quote: string; author: string; token: string }) {
   try {
     const ip = headers().get('x-forwarded-for')?.split(',')[0].trim() ?? '127.0.0.1';
@@ -21,7 +24,7 @@ export async function addQuoteAction(data: { quote: string; author: string; toke
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
-            secret: "1x0000000000000000000000000000000AA", // Test secret key
+            secret: TURNSTILE_SECRET_KEY,
             response: data.token,
             remoteip: ip,
         }),

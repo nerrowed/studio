@@ -12,6 +12,9 @@ import { Turnstile } from '@marsidev/react-turnstile';
 import { addQuoteAction } from '../actions';
 
 export default function AddQuotePage() {
+  // Ganti dengan Site Key Cloudflare Turnstile Anda
+  const TURNSTILE_SITE_KEY = "1x00000000000000000000AA";
+
   const [quote, setQuote] = useState('');
   const [author, setAuthor] = useState('');
   const [isSaving, setIsSaving] = useState(false);
@@ -94,7 +97,7 @@ export default function AddQuotePage() {
 
               <Turnstile
                 key={widgetKey}
-                siteKey="1x00000000000000000000AA"
+                siteKey={TURNSTILE_SITE_KEY}
                 onSuccess={setToken}
                 options={{ theme: 'light' }}
               />
