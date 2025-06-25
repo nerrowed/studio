@@ -2,12 +2,12 @@ import { getApp, getApps, initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  apiKey: "AIzaSyDamUIfek_-6l0fhVgpOuyc-CI_ZCanslk",
+  authDomain: "unspoken-box1n.firebaseapp.com",
+  projectId: "unspoken-box1n",
+  storageBucket: "unspoken-box1n.firebasestorage.app",
+  messagingSenderId: "324757395832",
+  appId: "1:324757395832:web:2257035485057f3d34d08d"
 };
 
 // This function will initialize and get the Firestore instance.

@@ -1,8 +1,9 @@
 'use server';
 
 import { getFirestoreInstance } from '@/lib/firebase';
-import { collection, addDoc, getDocs, query, orderBy, serverTimestamp, Timestamp } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, orderBy, serverTimestamp, Timestamp, doc, getDoc, setDoc } from 'firebase/firestore';
 import { revalidatePath } from 'next/cache';
+import { headers } from 'next/headers';
 
 export interface UserQuote {
   id: string;
@@ -14,6 +15,35 @@ export interface UserQuote {
 export async function addQuoteAction(data: { quote: string; author: string }) {
   try {
     const db = getFirestoreInstance();
+
+    // Rate limiting: 10 requests per IP per day
+    const ip = headers().get('x-forwarded-for')?.split(',')[0].trim() ?? '127.0.0.1';
+    const rateLimitRef = doc(db, "rateLimits", ip);
+    const rateLimitSnap = await getDoc(rateLimitRef);
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (rateLimitSnap.exists()) {
+        const { count, lastRequest } = rateLimitSnap.data();
+        const lastRequestDate = (lastRequest as Timestamp).toDate();
+        lastRequestDate.setHours(0, 0, 0, 0);
+
+        if (lastRequestDate.getTime() === today.getTime()) {
+            if (count >= 10) {
+                return { success: false, error: "You have reached your daily limit of 10 submissions." };
+            }
+            // Same day, increment count
+            await setDoc(rateLimitRef, { count: count + 1, lastRequest: serverTimestamp() });
+        } else {
+            // Different day, reset count
+            await setDoc(rateLimitRef, { count: 1, lastRequest: serverTimestamp() });
+        }
+    } else {
+        // First request from this IP, create doc
+        await setDoc(rateLimitRef, { count: 1, lastRequest: serverTimestamp() });
+    }
+
     await addDoc(collection(db, 'quotes'), {
       ...data,
       createdAt: serverTimestamp(),
