@@ -11,10 +11,12 @@ import { Loader2 } from 'lucide-react';
 import { Turnstile } from '@marsidev/react-turnstile';
 import { addQuoteAction } from '../actions';
 
+// PENTING: Ganti dengan Site Key Cloudflare Turnstile ANDA SENDIRI (bukan kunci tes).
+// Anda mendapatkan ini dari dasbor Cloudflare Anda. Kunci tes akan selalu menampilkan pesan "testing only".
+const TURNSTILE_SITE_KEY = "0x4AAAAAABiWtxAfD3F51Ht9";
+
 export default function AddQuotePage() {
   // Ganti dengan Site Key Cloudflare Turnstile Anda
-  const TURNSTILE_SITE_KEY = "1x00000000000000000000AA";
-
   const [quote, setQuote] = useState('');
   const [author, setAuthor] = useState('');
   const [isSaving, setIsSaving] = useState(false);
