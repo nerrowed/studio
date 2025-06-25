@@ -12,12 +12,29 @@ export interface UserQuote {
   createdAt: string;
 }
 
-export async function addQuoteAction(data: { quote: string; author: string }) {
+export async function addQuoteAction(data: { quote: string; author: string; token: string }) {
   try {
+    const ip = headers().get('x-forwarded-for')?.split(',')[0].trim() ?? '127.0.0.1';
+
+    // Verify Turnstile token
+    const turnstileResponse = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+            secret: process.env.CLOUDFLARE_TURNSTILE_SECRET_KEY!,
+            response: data.token,
+            remoteip: ip,
+        }),
+    });
+    const outcome = await turnstileResponse.json();
+    if (!outcome.success) {
+        return { success: false, error: 'CAPTCHA verification failed. Please try again.' };
+    }
+
+
     const db = getFirestoreInstance();
 
     // Rate limiting: 10 requests per IP per day
-    const ip = headers().get('x-forwarded-for')?.split(',')[0].trim() ?? '127.0.0.1';
     const rateLimitRef = doc(db, "rateLimits", ip);
     const rateLimitSnap = await getDoc(rateLimitRef);
     
@@ -33,25 +50,23 @@ export async function addQuoteAction(data: { quote: string; author: string }) {
             if (count >= 10) {
                 return { success: false, error: "You have reached your daily limit of 10 submissions." };
             }
-            // Same day, increment count
-            await setDoc(rateLimitRef, { count: count + 1, lastRequest: serverTimestamp() });
+            await setDoc(rateLimitRef, { count: count + 1, lastRequest: serverTimestamp() }, { merge: true });
         } else {
-            // Different day, reset count
             await setDoc(rateLimitRef, { count: 1, lastRequest: serverTimestamp() });
         }
     } else {
-        // First request from this IP, create doc
         await setDoc(rateLimitRef, { count: 1, lastRequest: serverTimestamp() });
     }
 
     await addDoc(collection(db, 'quotes'), {
-      ...data,
+      quote: data.quote,
+      author: data.author,
       createdAt: serverTimestamp(),
     });
     revalidatePath('/');
     return { success: true };
   } catch (error) {
-    console.error('Error adding document to Firestore: ', error);
+    console.error('Error in addQuoteAction: ', error);
     const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
     return { success: false, error: `Failed to save quote. Reason: ${errorMessage}` };
   }

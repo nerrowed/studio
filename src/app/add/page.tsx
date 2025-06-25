@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
+import { Turnstile } from '@marsidev/react-turnstile';
 import { addQuoteAction } from '../actions';
 
 export default function AddQuotePage() {
@@ -15,6 +16,8 @@ export default function AddQuotePage() {
   const [author, setAuthor] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [widgetKey, setWidgetKey] = useState(0);
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -24,17 +27,24 @@ export default function AddQuotePage() {
       setError('Message cannot be empty.');
       return;
     }
+     if (!token) {
+      setError('Please complete the CAPTCHA verification.');
+      return;
+    }
     setError(null);
     setIsSaving(true);
 
     try {
-      const result = await addQuoteAction({ quote, author: author || 'Anonymous' });
+      const result = await addQuoteAction({ quote, author: author || 'Anonymous', token });
       if (result.success) {
         startTransition(() => {
           router.push('/');
         });
       } else {
         setError(result.error || 'Failed to save message. Please try again.');
+        // Reset Turnstile to get a new token
+        setToken(null);
+        setWidgetKey(k => k + 1);
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred.';
@@ -81,8 +91,16 @@ export default function AddQuotePage() {
                   className="bg-background border-border focus:ring-primary"
                 />
               </div>
+
+              <Turnstile
+                key={widgetKey}
+                siteKey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY!}
+                onSuccess={setToken}
+                options={{ theme: 'light' }}
+              />
+
               {error && <p className="text-sm text-destructive">{error}</p>}
-              <Button type="submit" size="lg" className="w-full bg-primary text-primary-foreground hover:bg-primary/90" disabled={isLoading}>
+              <Button type="submit" size="lg" className="w-full bg-primary text-primary-foreground hover:bg-primary/90" disabled={isLoading || !token}>
                 {isLoading ? (
                   <Loader2 className="h-6 w-6 animate-spin" />
                 ) : (
