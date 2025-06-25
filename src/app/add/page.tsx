@@ -13,7 +13,7 @@ import { addQuoteAction } from '../actions';
 
 export default function AddQuotePage() {
   // Ganti dengan Site Key Cloudflare Turnstile Anda
-  const TURNSTILE_SITE_KEY = "1x00000000000000000000AA";
+  const TURNSTILE_SITE_KEY = "0x4AAAAAABiWtxAfD3F51Ht9";
 
   const [quote, setQuote] = useState('');
   const [author, setAuthor] = useState('');
