@@ -21,7 +21,7 @@ export async function addQuoteAction(data: { quote: string; author: string; toke
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
-            secret: process.env.CLOUDFLARE_TURNSTILE_SECRET_KEY!,
+            secret: "1x0000000000000000000000000000000AA", // Test secret key
             response: data.token,
             remoteip: ip,
         }),

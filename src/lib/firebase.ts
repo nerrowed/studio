@@ -15,7 +15,7 @@ const firebaseConfig = {
 const getFirestoreInstance = () => {
   if (!firebaseConfig.projectId) {
     // A simple check for a key variable. If it's missing, the rest likely are too.
-    throw new Error("Firebase configuration is incomplete. Please check your .env file and restart the server.");
+    throw new Error("Firebase configuration is incomplete.");
   }
   const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
   return getFirestore(app);

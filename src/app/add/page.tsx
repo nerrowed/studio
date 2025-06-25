@@ -94,7 +94,7 @@ export default function AddQuotePage() {
 
               <Turnstile
                 key={widgetKey}
-                siteKey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY!}
+                siteKey="1x00000000000000000000AA"
                 onSuccess={setToken}
                 options={{ theme: 'light' }}
               />
