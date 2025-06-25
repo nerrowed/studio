@@ -13,7 +13,7 @@ export interface UserQuote {
 }
 
 // Ganti dengan Secret Key Cloudflare Turnstile Anda
-const TURNSTILE_SECRET_KEY = "1x0000000000000000000000000000000AA"; 
+const TURNSTILE_SECRET_KEY = "0x4AAAAAABiWt6FUHfXOsvidZ2s7kn9RIOQ"; 
 
 export async function addQuoteAction(data: { quote: string; author: string; token: string }) {
   try {
