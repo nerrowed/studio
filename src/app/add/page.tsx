@@ -37,7 +37,8 @@ export default function AddQuotePage() {
         setError(result.error || 'Failed to save message. Please try again.');
       }
     } catch (err) {
-      setError('An unexpected error occurred. Please try again.');
+      const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred.';
+      setError(`An unexpected error occurred: ${errorMessage}`);
       console.error(err);
     } finally {
       setIsSaving(false);
@@ -47,7 +48,7 @@ export default function AddQuotePage() {
   const isLoading = isSaving || isPending;
 
   return (
-    <main className="container max-w-2xl py-12 md:py-24">
+    <main className="container max-w-2xl py-12 md:py-24 my-auto">
         <Card className="w-full border-2 border-border bg-card shadow-lg">
           <CardHeader>
             <CardTitle className="font-handwriting text-4xl text-foreground">
