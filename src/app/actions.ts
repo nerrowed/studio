@@ -13,8 +13,9 @@ export interface UserQuote {
   createdAt: string;
 }
 
-// PENTING: Ganti dengan Secret Key Cloudflare Turnstile ANDA SENDIRI.
-const TURNSTILE_SECRET_KEY = "YOUR_CLOUDFLARE_SECRET_KEY";
+// PENTING: Ganti kunci tes ini dengan Secret Key Cloudflare Turnstile ANDA SENDIRI untuk mode produksi.
+// Kunci tes ini akan selalu berhasil diverifikasi.
+const TURNSTILE_SECRET_KEY = "1x0000000000000000000000000000000AA";
 
 export async function addQuoteAction(data: { quote: string; author: string; token: string }) {
   try {
