@@ -84,9 +84,9 @@ export default function Home() {
   const loadingOrPending = isLoading || isPending;
 
   return (
-    <div className="flex flex-col bg-background text-foreground">
-      <section className="w-full py-12 md:py-24 lg:py-32">
-        <div className="container px-4 md:px-6 text-center">
+    <div className="container max-w-5xl flex flex-col bg-background text-foreground py-12 md:py-24">
+      <section className="w-full">
+        <div className="px-4 md:px-6 text-center">
           <h1 className="font-handwriting text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl/none">
             i cant say it to you, so i create this website
           </h1>
@@ -110,8 +110,8 @@ export default function Home() {
         </div>
       </section>
       
-      <section className="w-full pb-12 md:pb-24 bg-background">
-        <div className="container px-4 md:px-6 py-12">
+      <section className="w-full py-12 md:py-24">
+        <div className="px-4 md:px-6">
           <div className="grid gap-6 md:grid-cols-3">
             <InfoCard icon={<MessagesSquare className="h-6 w-6 text-primary"/>} title="Share Your Message">
                 Write a heartfelt message to someone special or save it as a little gift for yourself.
@@ -126,8 +126,8 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="browse" className="w-full pb-12 md:pb-24 pt-12">
-        <div className="container px-4 md:px-6">
+      <section id="browse" className="w-full pb-12 md:pb-24">
+        <div className="px-4 md:px-6">
             <div className="relative mb-8 max-w-lg mx-auto">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input

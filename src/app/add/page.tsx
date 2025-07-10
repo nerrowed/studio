@@ -13,7 +13,7 @@ import { addQuoteAction } from '../actions';
 
 // PENTING: Ganti dengan Site Key Cloudflare Turnstile ANDA SENDIRI (bukan kunci tes).
 // Anda mendapatkan ini dari dasbor Cloudflare Anda. Kunci tes akan selalu menampilkan pesan "testing only".
-const TURNSTILE_SITE_KEY = "0x4AAAAAABiWtxAfD3F51Ht9";
+const TURNSTILE_SITE_KEY = "1x00000000000000000000AA";
 
 export default function AddQuotePage() {
   // Ganti dengan Site Key Cloudflare Turnstile Anda
@@ -63,7 +63,7 @@ export default function AddQuotePage() {
   const isLoading = isSaving || isPending;
 
   return (
-    <main className="container max-w-2xl py-12 md:py-24 my-auto">
+    <div className="container max-w-2xl py-12 md:py-24 my-auto">
         <Card className="w-full border-2 border-border bg-card shadow-lg">
           <CardHeader>
             <CardTitle className="font-handwriting text-4xl text-foreground">
@@ -115,6 +115,6 @@ export default function AddQuotePage() {
             </form>
           </CardContent>
         </Card>
-      </main>
+      </div>
   );
 }
