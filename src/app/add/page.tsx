@@ -16,7 +16,6 @@ import { addQuoteAction } from '../actions';
 const TURNSTILE_SITE_KEY = "1x00000000000000000000AA";
 
 export default function AddQuotePage() {
-  // Ganti dengan Site Key Cloudflare Turnstile Anda
   const [quote, setQuote] = useState('');
   const [author, setAuthor] = useState('');
   const [isSaving, setIsSaving] = useState(false);
