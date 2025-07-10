@@ -13,9 +13,8 @@ export interface UserQuote {
   createdAt: string;
 }
 
-// PENTING: Ganti dengan Secret Key Cloudflare Turnstile ANDA SENDIRI (bukan kunci tes).
-// Anda mendapatkan ini dari dasbor Cloudflare Anda.
-const TURNSTILE_SECRET_KEY = "0x4AAAAAABiWt6FUHfXOsvidZ2s7kn9RIOQ"; 
+// PENTING: Ganti dengan Secret Key Cloudflare Turnstile ANDA SENDIRI.
+const TURNSTILE_SECRET_KEY = "YOUR_CLOUDFLARE_SECRET_KEY";
 
 export async function addQuoteAction(data: { quote: string; author: string; token: string }) {
   try {
