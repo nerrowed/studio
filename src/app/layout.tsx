@@ -40,7 +40,7 @@ export default function RootLayout({
       >
         <div className="relative flex min-h-dvh flex-col bg-background">
           <Header />
-          <main className="flex-1 flex">{children}</main>
+          <main className="flex-1 flex flex-col items-center">{children}</main>
           <footer className="w-full border-t border-border py-4">
             <div className="container text-center text-sm text-muted-foreground">
               Created by nerrow
