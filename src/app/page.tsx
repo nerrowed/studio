@@ -10,7 +10,6 @@ import Link from 'next/link';
 import type { UserQuote } from "./actions";
 import { getQuotesAction } from "./actions";
 
-
 const QUOTES_PER_PAGE = 4;
 
 const InfoCard = ({ icon, title, children }: { icon: React.ReactNode, title: string, children: React.ReactNode }) => (
@@ -42,9 +41,11 @@ export default function Home() {
       try {
         const quotesFromDb = await getQuotesAction();
         setAllQuotes(quotesFromDb);
+        setFilteredQuotes(quotesFromDb);
       } catch (error) {
         console.error("Failed to fetch quotes from database", error);
         setAllQuotes([]);
+        setFilteredQuotes([]);
       } finally {
         setIsLoading(false);
       }
@@ -141,7 +142,7 @@ export default function Home() {
             
           {loadingOrPending ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-               {Array(QUOTES_PER_PAGE).fill(null).map((_, i) => (
+               {Array.from({ length: QUOTES_PER_PAGE }).map((_, i) => (
                     <Card key={i} className="min-h-[220px] flex items-center justify-center bg-secondary">
                         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
                     </Card>
