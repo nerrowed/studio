@@ -2,10 +2,10 @@ import { getApp, getApps, initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAr5veP8AUuqQuzygbc_5fCwmsXXXwejdM",
+  apiKey: "AIzaSyDamUIfek_-6l0fhVgpOuyc-CI_ZCanslk",
   authDomain: "unspoken-box1n.firebaseapp.com",
   projectId: "unspoken-box1n",
-  storageBucket: "unspoken-box1n.firebasestorage.app",
+  storageBucket: "unspoken-box1n.appspot.com",
   messagingSenderId: "324757395832",
   appId: "1:324757395832:web:2257035485057f3d34d08d"
 };
